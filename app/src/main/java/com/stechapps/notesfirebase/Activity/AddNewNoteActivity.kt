@@ -3,6 +3,7 @@ package com.stechapps.notesfirebase.Activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.stechapps.notesfirebase.R
 import kotlinx.android.synthetic.main.activity_add_new_note.*
@@ -24,8 +25,8 @@ class AddNewNoteActivity : AppCompatActivity() {
             user["Heading"] = Head
             user["Description"] = Descrip
             user["abs"] = Abst
-            
-            db.collection("Notes").document(Head).set(user).addOnSuccessListener {
+            val mAuth=FirebaseAuth.getInstance()
+            db.collection("Users").document(mAuth.currentUser?.email.toString()).collection("Notes").document(Head).set(user).addOnSuccessListener {
                 Toast.makeText(applicationContext,"Added note",Toast.LENGTH_SHORT).show()
             }.addOnFailureListener{
                 Toast.makeText(applicationContext,"something went wrong",Toast.LENGTH_SHORT).show()

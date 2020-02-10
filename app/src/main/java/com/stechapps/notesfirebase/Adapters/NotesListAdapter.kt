@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.stechapps.notesfirebase.Activity.NotesDescriptActivity
 import com.stechapps.notesfirebase.R
 import com.stechapps.notesfirebase.models.NotesListModel
@@ -16,9 +18,11 @@ import kotlinx.android.synthetic.main.row_notes_list.view.*
 
 class NotesListAdapter(private  val Dataset:ArrayList<NotesListModel>,val context:Context):RecyclerView.Adapter<NotesListAdapter.NotesViewHolder>(){
 
+    val db=FirebaseFirestore.getInstance()
     class NotesViewHolder(v:View):RecyclerView.ViewHolder(v){
          val tvHeading=v.heading
          val tvAbs=v.abs
+         val del=v.bt_delete
 
     }
 
@@ -38,6 +42,10 @@ class NotesListAdapter(private  val Dataset:ArrayList<NotesListModel>,val contex
             val intent  = Intent(context,NotesDescriptActivity::class.java)
             intent.putExtra("Heading", Dataset[position].Heading)
             ContextCompat.startActivity(context,intent, Bundle.EMPTY)
+        }
+        holder.del.setOnClickListener {
+             db.collection("Users").document(FirebaseAuth.getInstance().currentUser?.email.toString()).collection("Notes").document(Dataset.get(position).Heading).delete()
+
         }
     }
 
